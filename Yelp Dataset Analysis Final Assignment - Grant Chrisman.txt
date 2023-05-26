@@ -1,0 +1,342 @@
+Part 1: Yelp Dataset Profiling and Understanding
+
+1. Profile the data by finding the total number of records for each of the tables below:
+	
+i. Attribute table = 10000
+ii. Business table = 10000
+iii. Category table = 10000
+iv. Checkin table = 10000
+v. elite_years table = 10000
+vi. friend table = 10000
+vii. hours table = 10000
+viii. photo table = 10000
+ix. review table = 10000
+x. tip table = 10000
+xi. user table = 10000
+
+
+
+2. Find the total distinct records by either the foreign key or primary key for each table. If two foreign keys are listed in the table, please specify which foreign key.
+
+i. Business = 10000 (using id)
+ii. Hours = 1562 (using business_id)
+iii. Category = 2643 (using business_id)
+iv. Attribute = 1115 (using business_id)
+v. Review = 8090 (using business_id)
+vi. Checkin = 493 (using business_id)
+vii. Photo = 6493 (using business_id)
+viii. Tip = 3979 (using business_id)
+ix. User = 10000 (using id)
+x. Friend = 11 (using user_id)
+xi. Elite_years = 2780 (using user_id)
+
+
+
+3. Are there any columns with null values in the Users table? Indicate "yes," or "no."
+
+	Answer: average_stars
+	
+	
+	SQL code used to arrive at answer:
+select
+case
+    when id is null then '1'
+    when name is null then '2'
+    when review_count is null then '3'
+    when yelping_since is null then '4'
+    when useful is null then '5'
+    when funny is null then '6'
+    when cool is null then '7'
+    when fans is null then '8'
+    when average_stars then '9'
+    when compliment_hot then '10'
+    when compliment_more then '11'
+    when compliment_profile then '12'
+    when compliment_cute then '13'
+    when compliment_list then '14'
+    when compliment_note then '15'
+    when compliment_plain then '16'
+    when compliment_cool then '17'
+    when compliment_funny then '18'
+    when compliment_writer then '19'
+    when compliment_photos then '20'
+end as ColumnsWithNullValues
+from user
+where ColumnsWithNullValues<>'None'
+group by ColumnsWithNullValues;
+
+
+
+4. For each table and column listed below, display the smallest (minimum), largest (maximum), and average (mean) value for the following fields:
+
+	i. Table: Review, Column: Stars
+	
+		min:	1	max:	5	avg:	3.7082
+		
+	
+	ii. Table: Business, Column: Stars
+	
+		min:	1	max:	5	avg:	3.6549
+		
+	
+	iii. Table: Tip, Column: Likes
+	
+		min:	0	max:	2	avg:	0.0144
+		
+	
+	iv. Table: Checkin, Column: Count
+	
+		min:	1	max:	53	avg:	1.9414
+		
+	
+	v. Table: User, Column: Review_count
+	
+		min:	0	max:	2000	avg:	24.2995
+
+
+5. List the cities with the most reviews in descending order:
+
+	SQL code used to arrive at answer:
+select city
+, sum(review_count) as TotalReviewz
+from business
+group by city
+order by TotalReviewz desc;
+	
+	
+	Copy and Paste the Result Below:
++-----------------+--------------+
+| city            | TotalReviewz |
++-----------------+--------------+
+| Las Vegas       |        82854 |
+| Phoenix         |        34503 |
+| Toronto         |        24113 |
+| Scottsdale      |        20614 |
+| Charlotte       |        12523 |
+| Henderson       |        10871 |
+| Tempe           |        10504 |
+| Pittsburgh      |         9798 |
+| Montréal        |         9448 |
+| Chandler        |         8112 |
+| Mesa            |         6875 |
+| Gilbert         |         6380 |
+| Cleveland       |         5593 |
+| Madison         |         5265 |
+| Glendale        |         4406 |
+| Mississauga     |         3814 |
+| Edinburgh       |         2792 |
+| Peoria          |         2624 |
+| North Las Vegas |         2438 |
+| Markham         |         2352 |
+| Champaign       |         2029 |
+| Stuttgart       |         1849 |
+| Surprise        |         1520 |
+| Lakewood        |         1465 |
+| Goodyear        |         1155 |
++-----------------+--------------+
+(Output limit exceeded, 25 of 362 total rows shown)
+
+
+
+6. Find the distribution of star ratings to the business in the following cities:
+
+i. Avon
+
+SQL code used to arrive at answer:
+
+select avg(stars) as AvonAvgStarRating
+, count(stars) as AvonNumberofRatings
+from business
+where city = 'Avon';
+
+Copy and Paste the Resulting Table Below (2 columns â€“ star rating and count):
+
++-------------------+---------------------+
+| AvonAvgStarRating | AvonNumberofRatings |
++-------------------+---------------------+
+|              3.45 |                  10 |
++-------------------+---------------------+
+
+ii. Beachwood
+
+SQL code used to arrive at answer:
+
+select avg(stars) as BWAvgStarRating
+, count(stars) as BWNumberofRatings
+from business
+where city = 'Beachwood';
+
+Copy and Paste the Resulting Table Below (2 columns â€“ star rating and count):
+
++-----------------+-------------------+
+| BWAvgStarRating | BWNumberofRatings |
++-----------------+-------------------+
+|   3.96428571429 |                14 |
++-----------------+-------------------+
+
+
+7. Find the top 3 users based on their total number of reviews:
+		
+	SQL code used to arrive at answer: John, David, Chris & Mike (are tied)
+
+select name, count(review_count) as NumberofReviews
+from user
+group by name
+order by NumberofReviews desc;	
+		
+	Copy and Paste the Result Below:
++----------+-----------------+
+| name     | NumberofReviews |
++----------+-----------------+
+| John     |             102 |
+| David    |              90 |
+| Chris    |              74 |
+| Mike     |              74 |
+| Michael  |              72 |
+| Jennifer |              63 |
+| Mark     |              59 |
+| Lisa     |              58 |
+| Melissa  |              58 |
+| Sarah    |              55 |
+| Alex     |              54 |
+| James    |              48 |
+| Jessica  |              45 |
+| Ryan     |              45 |
+| J        |              43 |
+| Michelle |              43 |
+| Andrew   |              41 |
+| Kevin    |              41 |
+| Mary     |              41 |
+| Amanda   |              40 |
+| Ashley   |              40 |
+| Brian    |              40 |
+| Karen    |              40 |
+| Laura    |              39 |
+| Robert   |              39 |
++----------+-----------------+
+
+
+8. Does posing more reviews correlate with more fans?
+
+	Please explain your findings and interpretation of the results:
+
+select review_count, avg(fans) as AvgFans
+from user
+group by review_count
+order by AvgFans desc;
+
+Using this query, you can see the number of fans on average for the amount of reviews a 
+user has made does have a correlation. However, I do not believe this correlation to be very
+strong because the average amount of fans per review count can also vary quite a bit. In other
+words, there is a correlation that the more reviews one makes will give them a greater chance
+to increase their number of fans but at the same time, just because you have a lot of reviews
+does not guarantee you to have more fans than someone with less reviews than you. For example,
+the user with the most fans (503) has 609 reviews, which is almost double that of the user
+with the most reviews (2000 reviews, 253 fans). This is additionally interesting considering
+the user with the most fans has close to a quarter of the reviews made than the user with the
+most reviews.
+
+
+9. Are there more reviews with the word "love" or with the word "hate" in them?
+
+	Answer: Love(1780) has more than hate(232)
+
+	
+	SQL code used to arrive at answer:
+--Reviews with love in them--
+select count(id) as NumberOfLove
+from review
+where text like '%love%';
+
+--Reviews with hate in them--
+select count(id) as NumberOfHate
+from review
+where text like '%hate%';
+
+
+10. Find the top 10 users with the most fans:
+
+	SQL code used to arrive at answer:
+select name, fans
+from user
+order by fans desc
+limit 10;
+	
+	
+	Copy and Paste the Result Below:
++-----------+------+
+| name      | fans |
++-----------+------+
+| Amy       |  503 |
+| Mimi      |  497 |
+| Harald    |  311 |
+| Gerald    |  253 |
+| Christine |  173 |
+| Lisa      |  159 |
+| Cat       |  133 |
+| William   |  126 |
+| Fran      |  124 |
+| Lissa     |  120 |
++-----------+------+
+
+
+
+Part 2: Inferences and Analysis
+
+1. Pick one city and category of your choice and group the businesses in that city or category by their overall 
+star rating. Compare the businesses with 2-3 stars to the businesses with 4-5 stars and answer the following 
+questions. Include your code.
+
+
+
+i. Do the two groups you chose to analyze have a different distribution of hours?
+	- 
+
+SQL code used for analysis:
+--Leaving this here as reference--
+SELECT
+  business.city
+, category.category
+, CASE    
+    WHEN business.stars BETWEEN 2.0 AND 3.0 THEN '2-3 stars'
+    WHEN business.stars BETWEEN 4.0 AND 5.0 THEN '4-5 stars'
+    ELSE 'below 2' END AS 'ranking',
+COUNT(DISTINCT business.id) AS NumberofIds,            
+       COUNT(hours) AS TotalDaysOpen,        
+       COUNT(hours)*1 / COUNT(DISTINCT business.id)  AS AvgDaysOpen
+from (
+(business INNER JOIN hours ON business.id = hours.business_id)
+     INNER JOIN category ON business.id = category.business_id)
+WHERE city = 'Toronto' AND category.category = 'Restaurants'
+GROUP BY ranking;
+--end of code--	
+
+
+
+ii. Do the two groups you chose to analyze have a different number of reviews?
+        - 
+         
+SQL code used for analysis:
+
+
+
+iii. Are you able to infer anything from the location data provided between these two groups? Explain.
+	-
+
+SQL code used for analysis:
+
+
+
+2. Group business based on the ones that are open and the ones that are closed. 
+What differences can you find between the ones that are still open and the ones that are closed?
+List at least two differences and the SQL code you used to arrive at your answer.
+
+		
+i. Difference 1:
+         
+         
+ii. Difference 2:
+         
+         
+         
+SQL code used for analysis:
